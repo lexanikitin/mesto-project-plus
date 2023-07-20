@@ -1,4 +1,4 @@
-import mongoose, {model, Schema, Types} from "mongoose";
+import { model, Schema, Types } from "mongoose";
 
 interface ICard {
   name: string;
@@ -35,5 +35,6 @@ const cardSchema = new Schema<ICard>(
       default: Date.now,
     },
   },
+  { versionKey: false },
 );
 export default model<ICard>("card", cardSchema);
