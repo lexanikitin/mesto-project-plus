@@ -1,5 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import User from "../models/user";
+import {CustomRequest} from "../middleware/authMiddleware";
 
 export const getAllUsersHandler = (
   req: Request,
@@ -28,6 +29,22 @@ export const getUserByIDHandler = (
   next: NextFunction,
 ) => {
   User.findById(req.params.userId)
+    .then((user) => res.send(user))
+    .catch(next);
+};
+
+export const patchUserProfileHandler = (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  const authenticatedUserId = req.user?._id;
+  const { name, about, avatar } = req.body;
+  User.findOneAndUpdate(
+    { authenticatedUserId },
+    { name, about, avatar },
+    { new: true },
+  )
     .then((user) => res.send(user))
     .catch(next);
 };
