@@ -39,3 +39,35 @@ export const deleteCardHandler = (
     .then((card) => res.send(card))
     .catch(next);
 };
+
+export const putLikeHandler = (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  const authenticatedUserId = req.user?._id;
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $addToSet: { likes: authenticatedUserId } },
+    { new: true },
+  )
+    .then((card) => res.send(card))
+    .catch(next);
+};
+
+export const deleteLikeHandler = (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  const authenticatedUserId = req.user?._id;
+
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    // @ts-ignore
+    { $pull: { likes: authenticatedUserId } },
+    { new: true },
+  )
+    .then((card) => res.send(card))
+    .catch(next);
+};
