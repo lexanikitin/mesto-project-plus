@@ -48,3 +48,19 @@ export const patchUserProfileHandler = (
     .then((user) => res.send(user))
     .catch(next);
 };
+
+export const patchUserAvatarHandler = (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  const authenticatedUserId = req.user?._id;
+  const { avatar } = req.body;
+  User.findOneAndUpdate(
+    { authenticatedUserId },
+    { avatar },
+    { new: true },
+  )
+    .then((user) => res.send(user))
+    .catch(next);
+};
