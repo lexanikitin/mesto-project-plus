@@ -1,6 +1,7 @@
 import {NextFunction, Request, Response} from "express";
 import Card from "../models/card";
-import {CustomRequest} from "../middleware/authMiddleware";
+import {CustomRequest} from "../middleware/auth";
+import ErrorWithCode from "../utilities/ErrorWithCode";
 
 export const getAllCardsHandler = (
   req: Request,
@@ -27,7 +28,13 @@ export const postCardHandler = (
     createdAt,
   })
     .then((card) => res.send(card))
-    .catch(next);
+    .catch((error) => {
+      if (error.name === "ValidationError") {
+        next(ErrorWithCode.badRequest());
+      } else {
+        next(error);
+      }
+    });
 };
 
 export const deleteCardHandler = (
@@ -37,7 +44,13 @@ export const deleteCardHandler = (
 ) => {
   Card.findByIdAndDelete(req.params.cardId)
     .then((card) => res.send(card))
-    .catch(next);
+    .catch((error) => {
+      if (error.name === "CastError") {
+        next(ErrorWithCode.notFound());
+      } else {
+        next(error);
+      }
+    });
 };
 
 export const putLikeHandler = (
@@ -51,8 +64,19 @@ export const putLikeHandler = (
     { $addToSet: { likes: authenticatedUserId } },
     { new: true },
   )
-    .then((card) => res.send(card))
-    .catch(next);
+    .then((card) => {
+      if (!card) {
+        next(ErrorWithCode.notFound());
+      }
+      res.send(card);
+    })
+    .catch((error) => {
+      if (error.name === "ValidationError") {
+        next(ErrorWithCode.badRequest());
+      } else {
+        next(error);
+      }
+    });
 };
 
 export const deleteLikeHandler = (
@@ -61,13 +85,22 @@ export const deleteLikeHandler = (
   next: NextFunction,
 ) => {
   const authenticatedUserId = req.user?._id;
-
   Card.findByIdAndUpdate(
     req.params.cardId,
-    // @ts-ignore
     { $pull: { likes: authenticatedUserId } },
     { new: true },
   )
-    .then((card) => res.send(card))
-    .catch(next);
+    .then((card) => {
+      if (!card) {
+        next(ErrorWithCode.notFound());
+      }
+      res.send(card);
+    })
+    .catch((error) => {
+      if (error.name === "ValidationError") {
+        next(ErrorWithCode.badRequest());
+      } else {
+        next(error);
+      }
+    });
 };

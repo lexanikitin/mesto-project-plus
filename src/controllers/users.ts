@@ -1,6 +1,7 @@
 import {NextFunction, Request, Response} from "express";
 import User from "../models/user";
-import {CustomRequest} from "../middleware/authMiddleware";
+import {CustomRequest} from "../middleware/auth";
+import ErrorWithCode from "../utilities/ErrorWithCode";
 
 export const getAllUsersHandler = (
   req: Request,
@@ -17,10 +18,16 @@ export const postUserHandler = (
   res: Response,
   next: NextFunction,
 ) => {
-  const {name, about, avatar} = req.body;
-  User.create({name, about, avatar})
+  const { name, about, avatar } = req.body;
+  User.create({ name, about, avatar })
     .then((user) => res.send(user))
-    .catch(next);
+    .catch((error) => {
+      if (error.name === "ValidationError") {
+        next(ErrorWithCode.badRequest());
+      } else {
+        next(error);
+      }
+    });
 };
 
 export const getUserByIDHandler = (
@@ -30,7 +37,13 @@ export const getUserByIDHandler = (
 ) => {
   User.findById(req.params.userId)
     .then((user) => res.send(user))
-    .catch(next);
+    .catch((error) => {
+      if (error.name === "CastError") {
+        next(ErrorWithCode.notFound());
+      } else {
+        next(error);
+      }
+    });
 };
 
 export const patchUserProfileHandler = (
@@ -45,8 +58,19 @@ export const patchUserProfileHandler = (
     { name, about, avatar },
     { new: true },
   )
-    .then((user) => res.send(user))
-    .catch(next);
+    .then((user) => {
+      if (!user) {
+        next(ErrorWithCode.notFound());
+      }
+      res.send(user);
+    })
+    .catch((error) => {
+      if (error.name === "ValidationError") {
+        next(ErrorWithCode.badRequest());
+      } else {
+        next(error);
+      }
+    });
 };
 
 export const patchUserAvatarHandler = (
@@ -61,6 +85,17 @@ export const patchUserAvatarHandler = (
     { avatar },
     { new: true },
   )
-    .then((user) => res.send(user))
-    .catch(next);
+    .then((user) => {
+      if (!user) {
+        next(ErrorWithCode.notFound());
+      }
+      res.send(user);
+    })
+    .catch((error) => {
+      if (error.name === "ValidationError") {
+        next(ErrorWithCode.badRequest());
+      } else {
+        next(error);
+      }
+    });
 };
