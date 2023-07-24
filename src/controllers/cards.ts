@@ -1,6 +1,6 @@
-import {NextFunction, Request, Response} from "express";
+import { NextFunction, Request, Response } from "express";
 import Card from "../models/card";
-import {CustomRequest} from "../middleware/auth";
+import { CustomRequest } from "../middleware/auth";
 import ErrorWithCode from "../utilities/ErrorWithCode";
 
 export const getAllCardsHandler = (
@@ -19,13 +19,11 @@ export const postCardHandler = (
   next: NextFunction,
 ) => {
   const ownerId = req.user?._id;
-  const { name, link, likes, createdAt } = req.body;
+  const { name, link } = req.body;
   Card.create({
     name,
     link,
     owner: ownerId,
-    likes,
-    createdAt,
   })
     .then((card) => res.status(201).send(card))
     .catch((error) => {
