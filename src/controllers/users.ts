@@ -52,10 +52,10 @@ export const patchUserProfileHandler = (
   next: NextFunction,
 ) => {
   const authenticatedUserId = req.user?._id;
-  const { name, about, avatar } = req.body;
+  const { name, about } = req.body;
   User.findOneAndUpdate(
     { authenticatedUserId },
-    { name, about, avatar },
+    { name, about },
     { new: true },
   )
     .then((user) => {
