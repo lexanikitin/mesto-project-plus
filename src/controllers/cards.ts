@@ -60,7 +60,7 @@ export const putLikeHandler = (
     .orFail(() => ErrorWithCode.notFound())
     .then((card) => res.send(card))
     .catch((error) => {
-      if (error.name === "ValidationError") {
+      if (error.name === "CastError") {
         next(ErrorWithCode.badRequest());
       } else {
         next(error);
@@ -82,7 +82,7 @@ export const deleteLikeHandler = (
     .orFail(() => ErrorWithCode.notFound())
     .then((card) => res.send(card))
     .catch((error) => {
-      if (error.name === "ValidationError") {
+      if (error.name === "CastError") {
         next(ErrorWithCode.badRequest());
       } else {
         next(error);
