@@ -40,16 +40,20 @@ export const getUserByIDHandler = (
     .catch(next);
 };
 
-export const patchUserProfileHandler = (
+const patchUserData = (
+  data: {
+    name?: string;
+    about?: string;
+    avatar?: string;
+  },
   req: CustomRequest,
   res: Response,
   next: NextFunction,
 ) => {
   const authenticatedUserId = req.user?._id;
-  const { name, about } = req.body;
   User.findOneAndUpdate(
     { authenticatedUserId },
-    { name, about },
+    { data },
     {
       new: true,
       runValidators: true,
@@ -66,28 +70,14 @@ export const patchUserProfileHandler = (
     });
 };
 
+export const patchUserProfileHandler = (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction,
+) => patchUserData({ name: req.body.name, about: req.body.about }, req, res, next);
+
 export const patchUserAvatarHandler = (
   req: CustomRequest,
   res: Response,
   next: NextFunction,
-) => {
-  const authenticatedUserId = req.user?._id;
-  const { avatar } = req.body;
-  User.findOneAndUpdate(
-    { authenticatedUserId },
-    { avatar },
-    {
-      new: true,
-      runValidators: true,
-    },
-  )
-    .orFail(() => ErrorWithCode.notFound())
-    .then((user) => res.send(user))
-    .catch((error) => {
-      if (error.name === "ValidationError") {
-        next(ErrorWithCode.badRequest());
-      } else {
-        next(error);
-      }
-    });
-};
+) => patchUserData({ avatar: req.body.avatar }, req, res, next);
