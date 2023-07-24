@@ -27,7 +27,7 @@ export const postCardHandler = (
     likes,
     createdAt,
   })
-    .then((card) => res.send(card))
+    .then((card) => res.status(201).send(card))
     .catch((error) => {
       if (error.name === "ValidationError") {
         next(ErrorWithCode.badRequest());
