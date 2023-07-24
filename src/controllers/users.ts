@@ -1,6 +1,6 @@
-import {NextFunction, Request, Response} from "express";
+import { NextFunction, Request, Response } from "express";
 import User from "../models/user";
-import {CustomRequest} from "../middleware/auth";
+import { CustomRequest } from "../middleware/auth";
 import ErrorWithCode from "../utilities/ErrorWithCode";
 
 export const getAllUsersHandler = (
@@ -56,7 +56,10 @@ export const patchUserProfileHandler = (
   User.findOneAndUpdate(
     { authenticatedUserId },
     { name, about },
-    { new: true },
+    {
+      new: true,
+      runValidators: true,
+    },
   )
     .then((user) => {
       if (!user) {
@@ -83,7 +86,10 @@ export const patchUserAvatarHandler = (
   User.findOneAndUpdate(
     { authenticatedUserId },
     { avatar },
-    { new: true },
+    {
+      new: true,
+      runValidators: true,
+    },
   )
     .then((user) => {
       if (!user) {
