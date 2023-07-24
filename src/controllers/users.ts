@@ -35,15 +35,9 @@ export const getUserByIDHandler = (
   res: Response,
   next: NextFunction,
 ) => {
-  User.findById(req.params.userId)
+  User.findById(req.params.userId).orFail(() => ErrorWithCode.notFound())
     .then((user) => res.send(user))
-    .catch((error) => {
-      if (error.name === "CastError") {
-        next(ErrorWithCode.notFound());
-      } else {
-        next(error);
-      }
-    });
+    .catch(next);
 };
 
 export const patchUserProfileHandler = (
@@ -61,12 +55,8 @@ export const patchUserProfileHandler = (
       runValidators: true,
     },
   )
-    .then((user) => {
-      if (!user) {
-        next(ErrorWithCode.notFound());
-      }
-      res.send(user);
-    })
+    .orFail(() => ErrorWithCode.notFound())
+    .then((user) => res.send(user))
     .catch((error) => {
       if (error.name === "ValidationError") {
         next(ErrorWithCode.badRequest());
@@ -91,12 +81,8 @@ export const patchUserAvatarHandler = (
       runValidators: true,
     },
   )
-    .then((user) => {
-      if (!user) {
-        next(ErrorWithCode.notFound());
-      }
-      res.send(user);
-    })
+    .orFail(() => ErrorWithCode.notFound())
+    .then((user) => res.send(user))
     .catch((error) => {
       if (error.name === "ValidationError") {
         next(ErrorWithCode.badRequest());

@@ -43,14 +43,9 @@ export const deleteCardHandler = (
   next: NextFunction,
 ) => {
   Card.findByIdAndDelete(req.params.cardId)
+    .orFail(() => ErrorWithCode.notFound())
     .then((card) => res.send(card))
-    .catch((error) => {
-      if (error.name === "CastError") {
-        next(ErrorWithCode.notFound());
-      } else {
-        next(error);
-      }
-    });
+    .catch(next);
 };
 
 export const putLikeHandler = (
@@ -64,12 +59,8 @@ export const putLikeHandler = (
     { $addToSet: { likes: authenticatedUserId } },
     { new: true },
   )
-    .then((card) => {
-      if (!card) {
-        next(ErrorWithCode.notFound());
-      }
-      res.send(card);
-    })
+    .orFail(() => ErrorWithCode.notFound())
+    .then((card) => res.send(card))
     .catch((error) => {
       if (error.name === "ValidationError") {
         next(ErrorWithCode.badRequest());
@@ -90,12 +81,8 @@ export const deleteLikeHandler = (
     { $pull: { likes: authenticatedUserId } },
     { new: true },
   )
-    .then((card) => {
-      if (!card) {
-        next(ErrorWithCode.notFound());
-      }
-      res.send(card);
-    })
+    .orFail(() => ErrorWithCode.notFound())
+    .then((card) => res.send(card))
     .catch((error) => {
       if (error.name === "ValidationError") {
         next(ErrorWithCode.badRequest());
