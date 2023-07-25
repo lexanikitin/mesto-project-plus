@@ -37,7 +37,13 @@ export const getUserByIDHandler = (
 ) => {
   User.findById(req.params.userId).orFail(() => ErrorWithCode.notFound())
     .then((user) => res.send(user))
-    .catch(next); // обработка ошибки CastError с возвратом 500 кода
+    .catch((error) => {
+      if (error.name === "CastError") {
+        next(ErrorWithCode.badRequest());
+      } else {
+        next(error);
+      }
+    });
 };
 
 const patchUserData = (
