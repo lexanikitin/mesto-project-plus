@@ -43,7 +43,7 @@ export const deleteCardHandler = (
   Card.findByIdAndDelete(req.params.cardId)
     .orFail(() => ErrorWithCode.notFound())
     .then((card) => res.send(card))
-    .catch(next);
+    .catch(next); // обработка ошибки CastError с возвратом 500 кода
 };
 
 export const putLikeHandler = (
