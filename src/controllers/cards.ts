@@ -46,7 +46,7 @@ export const deleteCardHandler = (
     .catch(next); // обработка ошибки CastError с возвратом 500 кода
 };
 
-export const putLikeHandler = (
+export const toggleLikeHandler = (
   req: CustomRequest,
   res: Response,
   next: NextFunction,
@@ -54,29 +54,7 @@ export const putLikeHandler = (
   const authenticatedUserId = req.user?._id;
   Card.findByIdAndUpdate(
     req.params.cardId,
-    { $addToSet: { likes: authenticatedUserId } },
-    { new: true },
-  )
-    .orFail(() => ErrorWithCode.notFound())
-    .then((card) => res.send(card))
-    .catch((error) => {
-      if (error.name === "CastError") {
-        next(ErrorWithCode.badRequest());
-      } else {
-        next(error);
-      }
-    });
-};
-
-export const deleteLikeHandler = (
-  req: CustomRequest,
-  res: Response,
-  next: NextFunction,
-) => {
-  const authenticatedUserId = req.user?._id;
-  Card.findByIdAndUpdate(
-    req.params.cardId,
-    { $pull: { likes: authenticatedUserId } },
+    req.method === "PUT" ? { $addToSet: { likes: authenticatedUserId } } : { $pull: { likes: authenticatedUserId } },
     { new: true },
   )
     .orFail(() => ErrorWithCode.notFound())
