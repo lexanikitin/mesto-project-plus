@@ -60,6 +60,7 @@ export const toggleLikeHandler = (
   const authenticatedUserId = req.user?._id;
   Card.findByIdAndUpdate(
     req.params.cardId,
+    // @ts-ignore
     req.method === "PUT" ? { $addToSet: { likes: authenticatedUserId } } : { $pull: { likes: authenticatedUserId } },
     { new: true },
   )
