@@ -43,6 +43,7 @@ const userSchema = new mongoose.Schema<IUser>(
     password: {
       type: String,
       required: true,
+      select: false,
     },
   },
   { versionKey: false },
@@ -52,6 +53,7 @@ userSchema.static(
   "findUserByCredentials",
   function findUserByCredentials(email: string, password: string) {
     return this.findOne({ email })
+      .select("+password")
       .then((user: { password: string }) => {
         if (!user) {
           return Promise.reject(ErrorWithCode.unauthorized());
