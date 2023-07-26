@@ -40,8 +40,15 @@ export const deleteCardHandler = (
   res: Response,
   next: NextFunction,
 ) => {
-  Card.findByIdAndDelete(req.params.cardId)
+  const ownerId = req.user?._id;
+  Card.findById(req.params.cardId)
     .orFail(() => ErrorWithCode.notFound())
+    .then((card) => {
+      if (card.owner.toString() !== ownerId) {
+        next(ErrorWithCode.unauthorized());
+      }
+      return Card.findByIdAndRemove(req.params.cardId);
+    })
     .then((card) => res.send(card))
     .catch((error) => {
       if (error.name === "CastError") {
