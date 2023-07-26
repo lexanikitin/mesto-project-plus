@@ -17,6 +17,10 @@ class ErrorWithCode extends Error {
   static internalServerError() {
     return new ErrorWithCode(500, "Внутренняя ошибка сервера");
   }
+
+  static unauthorized() {
+    return new ErrorWithCode(401, "Необходима авторизация");
+  }
 }
 
 export default ErrorWithCode;

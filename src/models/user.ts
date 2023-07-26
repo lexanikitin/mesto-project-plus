@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import isEmail from "validator/lib/isEmail";
 import bcrypt from "bcryptjs";
+import ErrorWithCode from "../utilities/ErrorWithCode";
 
 interface IUser {
   name: string;
@@ -50,15 +51,15 @@ const userSchema = new mongoose.Schema<IUser>(
 userSchema.static(
   "findUserByCredentials",
   function findUserByCredentials(email: string, password: string) {
-    this.findOne({ email })
+    return this.findOne({ email })
       .then((user: { password: string }) => {
         if (!user) {
-          return Promise.reject(new Error("Неправильные почта или пароль"));
+          return Promise.reject(ErrorWithCode.unauthorized());
         }
         return bcrypt.compare(password, user.password)
           .then((matched) => {
             if (!matched) {
-              return Promise.reject(new Error("Неправильные почта или пароль"));
+              return Promise.reject(ErrorWithCode.unauthorized());
             }
             return user;
           });

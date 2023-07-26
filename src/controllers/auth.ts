@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import User from "../models/user";
 import ErrorWithCode from "../utilities/ErrorWithCode";
 
-export const login = (
+export const signinHandler = (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -12,13 +12,13 @@ export const login = (
   const { email, password } = req.body;
   User.findUserByCredentials(email, password)
     .then((user) => {
-      res.cookie("mesto-token", jwt.sign({ _id: user._id }, "mesto", { expiresIn: "7d" }));
+      res.cookie("mesto-token", jwt.sign({ _id: user._id }, "mesto-secret", { expiresIn: "7d" }), { httpOnly: true });
       res.send({ message: "Успешный вход в систему" });
     })
     .catch(next);
 };
 
-export const createUser = (
+export const signupHandler = (
   req: Request,
   res: Response,
   next: NextFunction,
