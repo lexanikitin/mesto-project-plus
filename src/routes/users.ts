@@ -8,7 +8,7 @@ import {
 import {
   getUserByIDValidationMiddleware,
   patchUserAvatarValidationMiddleware,
-  patchUserProfileValidationMiddleware
+  patchUserProfileValidationMiddleware,
 } from "../middleware/validation/user";
 
 const router = express.Router();
