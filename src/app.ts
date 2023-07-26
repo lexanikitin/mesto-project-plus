@@ -4,6 +4,7 @@ import router from "./routes/index";
 import authMiddleware from "./middleware/auth";
 import errorMiddleware from "./middleware/error";
 import { signinHandler, signupHandler } from "./controllers/auth";
+import { requestLogger } from "./middleware/requestLogger";
 
 const app = express();
 
@@ -12,6 +13,8 @@ const { PORT = 3000 } = process.env;
 mongoose.connect("mongodb://127.0.0.1:27017/mestodb");
 
 app.use(express.json());
+
+app.use(requestLogger);
 
 app.post("/signin", signinHandler);
 app.post("/signup", signupHandler);
