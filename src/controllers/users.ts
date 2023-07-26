@@ -70,3 +70,19 @@ export const patchUserAvatarHandler = (
   res: Response,
   next: NextFunction,
 ) => patchUserData({ avatar: req.body.avatar }, req, res, next);
+
+export const geyMyProfileHandler = (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
+  User.findById(req.user?._id).orFail(() => ErrorWithCode.notFound())
+    .then((user) => res.send(user))
+    .catch((error) => {
+      if (error.name === "CastError") {
+        next(ErrorWithCode.badRequest());
+      } else {
+        next(error);
+      }
+    });
+};
