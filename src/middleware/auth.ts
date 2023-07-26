@@ -1,4 +1,6 @@
 import { Response, NextFunction, Request } from "express";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import ErrorWithCode from "../utilities/ErrorWithCode";
 
 export interface CustomRequest extends Request {
   user?: {
@@ -7,10 +9,20 @@ export interface CustomRequest extends Request {
 }
 
 const authMiddleware = (req: CustomRequest, res: Response, next: NextFunction) => {
-  req.user = {
-    _id: "64b8f8aadd593a31ab8f2e74", // вставьте сюда _id созданного в предыдущем пункте пользователя
-  };
-  next();
+  const { cookie } = req.headers;
+  if (!cookie) {
+    next(ErrorWithCode.unauthorized());
+  }
+  try {
+    const payload:JwtPayload | string = jwt.verify(cookie!.split("=")[1], "mesto-secret");
+
+    req.user = {
+      // @ts-ignore
+      _id: payload,
+    };
+  } catch (error) {
+    next(ErrorWithCode.unauthorized());
+  }
 };
 
 export default authMiddleware;
