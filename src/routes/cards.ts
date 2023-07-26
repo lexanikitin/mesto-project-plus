@@ -5,13 +5,14 @@ import {
   postCardHandler,
   toggleLikeHandler,
 } from "../controllers/cards";
+import { cardValidationMiddleware, postCardValidationMiddleware } from "../middleware/validation/cards";
 
 const router = express.Router();
 
 router.get("/", getAllCardsHandler);
-router.post("/", postCardHandler);
-router.delete("/:cardId", deleteCardHandler);
-router.put("/:cardId/likes", toggleLikeHandler);
-router.delete("/:cardId/likes", toggleLikeHandler);
+router.post("/", postCardValidationMiddleware, postCardHandler);
+router.delete("/:cardId", cardValidationMiddleware, deleteCardHandler);
+router.put("/:cardId/likes", cardValidationMiddleware, toggleLikeHandler);
+router.delete("/:cardId/likes", cardValidationMiddleware, toggleLikeHandler);
 
 export default router;
