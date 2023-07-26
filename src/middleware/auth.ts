@@ -14,12 +14,11 @@ const authMiddleware = (req: CustomRequest, res: Response, next: NextFunction) =
     next(ErrorWithCode.unauthorized());
   }
   try {
-    const payload:JwtPayload | string = jwt.verify(cookie!.split("=")[1], "mesto-secret");
-
+    const payload = jwt.verify(cookie!.split("=")[1], "mesto-secret") as JwtPayload;
     req.user = {
-      // @ts-ignore
-      _id: payload,
+      _id: payload._id,
     };
+    next();
   } catch (error) {
     next(ErrorWithCode.unauthorized());
   }

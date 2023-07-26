@@ -1,9 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import bcrypt from "bcryptjs";
 import User from "../models/user";
 import { CustomRequest } from "../middleware/auth";
 import ErrorWithCode from "../utilities/ErrorWithCode";
-import jwt from "jsonwebtoken";
 
 export const getAllUsersHandler = (
   req: Request,
@@ -14,8 +12,6 @@ export const getAllUsersHandler = (
     .then((users) => res.send(users))
     .catch(next);
 };
-
-
 
 export const getUserByIDHandler = (
   req: Request,
@@ -74,4 +70,3 @@ export const patchUserAvatarHandler = (
   res: Response,
   next: NextFunction,
 ) => patchUserData({ avatar: req.body.avatar }, req, res, next);
-
