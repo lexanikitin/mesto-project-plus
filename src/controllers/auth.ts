@@ -30,6 +30,8 @@ export const signupHandler = (
     .catch((error) => {
       if (error.name === "ValidationError") {
         next(ErrorWithCode.badRequest());
+      } else if (error.code === 11000) {
+        next(ErrorWithCode.conflict());
       } else {
         next(error);
       }

@@ -21,6 +21,10 @@ class ErrorWithCode extends Error {
   static unauthorized() {
     return new ErrorWithCode(401, "Необходима авторизация");
   }
+
+  static conflict() {
+    return new ErrorWithCode(409, "Конфликт");
+  }
 }
 
 export default ErrorWithCode;
