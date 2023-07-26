@@ -4,7 +4,8 @@ import router from "./routes/index";
 import authMiddleware from "./middleware/auth";
 import errorMiddleware from "./middleware/error";
 import { signinHandler, signupHandler } from "./controllers/auth";
-import { requestLogger } from "./middleware/requestLogger";
+import requestLogger from "./middleware/requestLogger";
+import errorLogger from "./middleware/errorLogger";
 
 const app = express();
 
@@ -21,6 +22,9 @@ app.post("/signup", signupHandler);
 
 app.use(authMiddleware);
 app.use(router);
+
+app.use(errorLogger);
+
 app.use(errorMiddleware);
 
 app.listen(+PORT, () => console.log(`Server listening on port ${PORT}`));
