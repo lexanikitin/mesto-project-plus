@@ -10,16 +10,12 @@ class ErrorWithCode extends Error {
     return new ErrorWithCode(400, "Неверный запрос");
   }
 
-  static notFound() {
-    return new ErrorWithCode(404, "Ресурс не найден");
-  }
-
-  static internalServerError() {
-    return new ErrorWithCode(500, "Внутренняя ошибка сервера");
-  }
-
   static unauthorized() {
     return new ErrorWithCode(401, "Необходима авторизация");
+  }
+
+  static notFound() {
+    return new ErrorWithCode(404, "Ресурс не найден");
   }
 
   static conflict() {
