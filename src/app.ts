@@ -7,7 +7,7 @@ import errorMiddleware from "./middleware/error";
 import { signinHandler, signupHandler } from "./controllers/auth";
 import requestLogMiddleware from "./middleware/logger/request";
 import errorLogMiddleware from "./middleware/logger/error";
-import {signinValidationMiddleware, signupValidationMiddleware} from "./middleware/validation/auth";
+import { signinValidationMiddleware, signupValidationMiddleware } from "./middleware/validation/auth";
 
 const app = express();
 

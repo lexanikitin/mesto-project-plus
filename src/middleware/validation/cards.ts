@@ -5,7 +5,7 @@ import { urlPattern } from "../../utilities/urlPattern";
 export const postCardValidationMiddleware = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).required(),
-    link: Joi.string().required().pattern(urlPattern).required(),
+    link: Joi.string().pattern(urlPattern).required(),
   }),
 });
 
