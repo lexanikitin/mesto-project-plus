@@ -11,7 +11,7 @@ export interface CustomRequest extends Request {
 const authMiddleware = (req: CustomRequest, res: Response, next: NextFunction) => {
   const { cookie } = req.headers;
   if (!cookie) {
-    next(ErrorWithCode.unauthorized());
+    return next(ErrorWithCode.unauthorized());
   }
   try {
     const payload = jwt.verify(cookie!.split("=")[1], "mesto-secret") as JwtPayload;
